@@ -2,26 +2,101 @@ const packFormat = 46;
 const fontPath = "assets/minecraft/font";
 const imagePath = "assets/minecraft/textures";
 
+const imagesDiv = document.getElementById("images");
+const imageDetails = document.getElementById("imageDetails");
+const generatePackButton = document.getElementById("generatePack");
+
 const packName = document.getElementById("resourcePackName");
 const packDescription = document.getElementById("resourcePackDescription");
+const packPNG = document.getElementById("packPNG");
+
+const startingUnicode = document.getElementById("startingUnicode");
 var unicodeStart = 0xE000;
 
 const imagePreview = document.getElementById("imagePreview");
 const imageUploader = document.getElementById("imageUploader");
+
+const heightInput = document.getElementById("heightInput");
+const scaleInput = document.getElementById("scaleInput");
+
 var images = [ ];
+var selectedIcon = null;
+var selectedIconIndex = -1;
 
 function onLoad() {
     packName.value = "pack";
     packDescription.value = "";
 
+    startingUnicode.value = "\\uE000";
+    startingUnicode.onkeyup = () => {
+        if(!ensureValidUnicode()) {
+            startingUnicode.style.borderColor = "rgb(255, 32, 32)";
+        }
+        else {
+            startingUnicode.style.borderColor = "rgb(255, 117, 209)";
+        }
+    };
+
+    setImageSettings("", "", true);
+
+    heightInput.onkeyup = () => { handleImageSetting(heightInput, 0); }
+    scaleInput.onkeyup = () => { handleImageSetting(scaleInput, 1); }
+
     imageUploader.value = null;
     imageUploader.files = null;
+    imagesDiv.style.display = "none";
+    generatePackButton.disabled = true;
+
     images = [ ];
+}
+
+function ensureValidUnicode() {
+    if(startingUnicode.value.match("\\u") == null) {
+        return false;
+    }
+
+    let _unicode = Number.parseInt(startingUnicode.value.substring(2), 16);
+    if(_unicode >= 1114112 || _unicode < 1024) { // unicode max
+        return false;    
+    }
+        
+    unicodeStart = _unicode;
+    return true;
+}
+
+function handleImageSetting(_input, _index) {
+    if(selectedIconIndex == -1) {
+        return;
+    }
+
+    // finds any non number characters
+    if(_input.value.match("[^0-9]") != null) {
+        _input.style.borderColor = "rgb(255, 32, 32)";
+        return;
+    }
+    else {
+        _input.style.borderColor = "rgb(255, 117, 209)";
+    }
+
+    images[selectedIconIndex][2][_index] = 
+        _input.value.length == 0 ? 0 : _input.value;
+
+    refreshImage(selectedIcon, selectedIconIndex);
+}
+
+function copyUnicode() {
+    if(selectedIconIndex == -1) {
+        return;
+    }
+
+    navigator.clipboard.writeText(String.fromCodePoint(unicodeStart + selectedIconIndex));
 }
 
 function loadImages() {
     // clear previous images
     images = [ ];
+    setImageSettings("", "", true);
+
     while(imagePreview.childNodes.length > 0) {
         imagePreview.removeChild(imagePreview.childNodes[0]);
     }
@@ -31,7 +106,7 @@ function loadImages() {
         let _reader = new FileReader();
     
         _reader.addEventListener("load", async function() {
-            images[i] = [ _file.name.split(".")[0].toLowerCase(), arrayBufferToBase64(this.result) ];
+            images[i] = [ _file.name.split(".")[0].toLowerCase(), arrayBufferToBase64(this.result), [ 0, 16 ] ];
 
             let _imageStr = "data:image/png;base64," + images[i][1];
             createIcon(_imageStr, i);
@@ -39,17 +114,25 @@ function loadImages() {
         
         _reader.readAsArrayBuffer(_file);
     }
+
+    generatePackButton.disabled = false;    
+    imageDetails.style.display = "flex";
+    imagesDiv.style.display = "flex";
 }
 
+// refreshes the image's tooltip
+function refreshImage(_image, _index) {
+    _image.parentElement.childNodes[0].innerText = 
+        `Name: ${images[_index][0]}.png\nHeight: ${images[_index][2][0]}\nSize: ${images[_index][2][1]}`;
+}
+
+// creates an icon in the images section
 function createIcon(_src, _index) {
     let _icon = document.createElement("div");
     _icon.classList.add("iconContainer");
 
     let _label = document.createElement("p");
     _label.classList.add("iconLabel");
-    
-    _label.innerText = 
-        `Name: ${images[_index][0]}\nOffset: ${0}\nSize: ${16}}`;
 
     let _image = document.createElement("img");
     _image.classList.add("icon");
@@ -64,17 +147,80 @@ function createIcon(_src, _index) {
     };
 
     _image.onclick = (_event) => {
-        navigator.clipboard.writeText(String.fromCodePoint(0xE000 + _index));
+        let _isSelected = selectedIcon == _image;
+
+        if(selectedIcon != null) {
+            selectedIcon.style.transform = null;
+        }
+
+        // remove old icon
+        selectedIcon = null;
+        selectedIconIndex = -1;
+        setImageSettings("", "", true);
+
+        // only set new icon if it wasn't the old one
+        if(!_isSelected) {
+            selectedIcon = _image;
+            selectedIconIndex = _index;
+            
+            selectedIcon.style.transform = "scale(1.3)";
+            setImageSettings(images[_index][2][0], images[_index][2][1], false);
+        }
+        // navigator.clipboard.writeText(String.fromCodePoint(unicodeStart + _index));
     };
 
+    
     _icon.appendChild(_label);
     _icon.appendChild(_image);
-
+    
     imagePreview.appendChild(_icon);
+
+    _image.onload = () => {
+        images[_index][2][0] = Math.floor(_image.naturalHeight/1.5);
+        images[_index][2][1] = _image.naturalHeight;
+        refreshImage(_image, _index);
+    };
+}
+
+function uploadPackPNG() {
+    // create an input and 'click' it
+    let _picker = document.createElement("input");
+    _picker.type = "file";
+    _picker.accept = "image/png";
+    
+    _picker.onchange = (_event) => {
+        let _reader = new FileReader();
+        _reader.readAsDataURL(_event.target.files[0]);
+        
+        _reader.onload = (_event) => {
+            packPNG.src = _event.target.result;
+        }
+    };
+    
+    _picker.click();
+}
+
+// sets the image setting input labels to specified inputs
+function setImageSettings(_height, _scale, _disabled) {
+    heightInput.value = _height;
+    scaleInput.value = _scale;
+
+    heightInput.disabled = _disabled;
+    scaleInput.disabled = _disabled;
+
+    if(_disabled) {
+        heightInput.style.borderColor = "rgb(255, 32, 32)";
+        scaleInput.style.borderColor = "rgb(255, 32, 32)";
+    }
+    else {
+        heightInput.style.borderColor = "rgb(255, 117, 209)";
+        scaleInput.style.borderColor = "rgb(255, 117, 209)";
+    }
 }
 
 async function generatePack() {
-    let _msg = `{"providers": [`;let _name = (packName.value.length != 0) ? 
+    let _msg = `{"providers": [`;
+    let _name = (packName.value.length != 0) ? 
         packName.value : 
         "pack";
 
@@ -87,15 +233,22 @@ async function generatePack() {
 
     // process images
     for(let i = 0; i < images.length; i++) {
-        _msg += writeBitmap((unicodeStart + i).toString(16).toUpperCase(), images[i][0], 16, 16, _name);
+        _msg += writeBitmap((unicodeStart + i).toString(16).toUpperCase(), images[i][0], images[i][2][0], images[i][2][1], _name);
         _zip.file(`${imagePath}/${_name}/${images[i][0]}.png`, images[i][1], { base64: true });
     }
 
     // remove trailing json data
     _msg = _msg.substring(0, _msg.length - 2) + "]}";
-
     _zip.file(`${fontPath}/default.json`, _msg);
+
+    // add details
+    if(packPNG.src.match("data:image/png") != null) {
+        let _packPNG = packPNG.src.substring(22); // trim extra data
+        _zip.file("pack.png", _packPNG, { base64: true });
+    }
+
     _zip.file("pack.mcmeta", `{"pack": { "pack_format": ${packFormat}, "description": "${_description}" } }`);
+    _zip.file("credits.txt", "made by roo\nhttps://loveroo.org/");
 
     // generate blob and download file
     _zip.generateAsync({ type:"blob" }).then((_blob) => {
@@ -103,7 +256,7 @@ async function generatePack() {
     
         let _link = document.createElement('a');
         _link.style.setProperty('display', 'none');
-        _link.setAttribute("download", packName.value + ".zip");
+        _link.setAttribute("download", _name + ".zip");
         _link.href = _url;
     
         document.body.appendChild(_link);

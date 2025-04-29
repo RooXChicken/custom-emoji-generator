@@ -4,35 +4,69 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Winky+Sans" />
         <link rel="stylesheet" href="style.css">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- fix scaling on mobile :D -->
-        <title>Custom Emoji Pack Generator</title>
+        <!-- fix scaling on mobile :D -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         
+        <title>Custom Emoji Pack Generator</title>
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     </head>
 
     <body onload="onLoad()">
-        <div id="packDetails" class="content">
-            <medium>Resourcepack Name</medium>
-            <input id="resourcePackName" type="text">
+        <div id="mainPage">
+            <div id="packDetails" class="content">
+                <div id="packSettingsText">
+                    <medium>Name</medium>
+                    <input id="resourcePackName" type="text">
+        
+                    <medium>Description</medium>
+                    <input id="resourcePackDescription" type="text">
+        
+                    <medium>Starting Unicode</medium>
+                    <input id="startingUnicode" type="text">
+                </div>
+                <div id="packSettingsImage">
+                    <medium>Icon</medium>
+                    <img id="packPNG" onclick="uploadPackPNG()" src="assets/default.png">
+                </div>
+            </div>
+            
+            
+            <div id="imageDetails" class="content" style="margin-top: 4px; display: none;">
+                <medium class="label" style="margin: auto; cursor: pointer;" onclick="copyUnicode()">Copy selected character</medium>
 
-            <medium>Resourcepack Description</medium>
-            <input id="resourcePackDescription" type="text">
-        </div>
+                <div id="imageSettings">
+                    <div class="imageSettingsMin">
+                        <medium>Height</medium>
+                        <input id="heightInput" type="text">
+                    </div>
 
-        <div class="content">
-            <medium>Clip to copy unicode!</medium>
-        </div>
+                    <div class="imageSettingsMin">
+                        <medium>Scale</medium>
+                        <input id="scaleInput" type="text">
+                    </div>
+                </div>
 
-        <div id="imageDetails" class="content" style="margin-top: 4px">
-            <!-- filled out by images -->
-            <div id="imagePreview"></div>
-
-            <input id="imageUploader" accept="image/png" type="file" multiple onchange="loadImages()">
-            <button id="generatePack" onclick="generatePack()">Generate Resourcepack</button>
+                
+            </div>
+            
+            <!-- filled out by js -->
+            <div class="content" id="images" style="display: none;">
+                <medium class="label" style="margin: auto; padding-bottom: 4px;">Click to edit!</medium>
+                <div id="imagePreview"></div>
+            </div>
+            
+            <div class="content">
+                <input id="imageUploader" accept="image/png" type="file" multiple onchange="loadImages()">
+                <button disabled=true id="generatePack" onclick="generatePack()">Generate Resourcepack</button>
+            </div>
+    
+            <a href="https://loveroo.org"><p class="label" style="margin: auto; margin-top: 120px;">Created with love by Roo</p></a>
         </div>
     </body>
 
-    <!-- add script at the bottom to ensure all elements have been created -->
+    <!-- TY https://stuk.github.io/jszip/ <3 <3 <3 -->
     <script src="modules/jszip.js" type="text/javascript"></script>
+
+    <!-- add script at the bottom to ensure all elements have been created -->
     <script src="main.js" type="text/javascript"></script>
 </html>

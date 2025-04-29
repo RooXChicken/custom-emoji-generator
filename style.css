@@ -10,6 +10,10 @@ body {
     --text-color: rgb(0, 0, 0);
 }
 
+#mainPage {
+    min-width: fit-content;
+}
+
 .content {
     display: flex;
     
@@ -18,7 +22,7 @@ body {
     gap: 12px;
     
     background-color: rgba(0,0,0, 0.35);
-    border-radius: 24px 24px 24px 24px;
+    border-radius: 12px 12px 12px 12px;
     padding: 10px;
     width: fit-content;
     
@@ -27,7 +31,37 @@ body {
 }
 
 #packDetails {
-    margin-top: 96px;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+#packSettingsText {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#packSettingsImage {
+    display: flex;
+
+    justify-content: left;
+    flex-direction: column;
+}
+
+#packPNG {
+    border-style: solid;
+    border-color: rgb(255, 117, 209);
+    border-radius: 8px 8px 8px 8px;
+    border-width: 2px;
+
+    width: 96px;
+    cursor: pointer;
+
+    image-rendering: pixelated;
 }
 
 #imagePreview {
@@ -36,6 +70,9 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 960px;
+    gap: 2px;
+
+    justify-content: center;
 }
 
 .icon {
@@ -47,7 +84,7 @@ body {
     transition: transform 0.04s ease-in-out;
     
     filter: drop-shadow(0px 0px 0.35rem rgba(0, 0, 0, 0.8));
-    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
 .icon:hover {
@@ -78,5 +115,73 @@ body {
 }
 
 button, input {
+    background-color: rgb(48, 48, 48);
+    color: rgb(255, 255, 255);
+    
     font-family: 'Winky Sans';
+    border-radius: 8px 8px 8px 8px;
+    border-style: solid;
+    font-size: 16px;
+
+    cursor: pointer;
+
+    border-color: rgb(255, 117, 209);
+    transition: border-color 0.1s linear;
+    padding: 4px;
+}
+
+input[type=text] {
+    cursor: text;
+}
+
+button:disabled, input:disabled {
+    border-color: rgb(255, 32, 32);
+    cursor: not-allowed;
+}
+
+#generatePack, #imageUploader {
+    margin: auto;
+    width: 240px;
+}
+
+#imageUploader {
+    font-size: 14px;
+}
+
+a {
+    color: inherit;
+    max-width: fit-content;
+}
+
+.label {
+    background-color: rgba(0,0,0, 0.35);
+    padding: 8px;
+    width: fit-content;
+    
+    border-radius: 12px 12px 12px 12px;
+}
+
+#imageSettings {
+    display: flex;
+    flex-direction: column;
+
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+}
+
+.imageSettingsMin {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    gap: 4px;
+}
+
+#imageOptions {
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap: wrap;
+    justify-content: center;
 }
