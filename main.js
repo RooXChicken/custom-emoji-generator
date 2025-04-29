@@ -1,24 +1,4 @@
-// thank you <3
-// https://www.npmjs.com/package/jimp/v/1.6.0
-// var Jimp = null;
-// import("./modules/jimp.js").then((_jimp) => {
-//     Jimp = _jimp.Jimp;
-// });
-
-// thank you <3
-// https://gildas-lormeau.github.io/zip.js/
-// var ZipJS = null;
-// import("./modules/zipjs/zip.js").then((_zip) => {
-//     ZipJS = _zip;
-// });
-
-// // thank you <3
-// // https://stuk.github.io/jszip/
-// var JSZip = null;
-// import("./modules/jszip.js").then((_zip) => {
-//     JSZip = _zip.JSZip;
-// });
-
+const packFormat = 46;
 const fontPath = "assets/minecraft/font";
 const imagePath = "assets/minecraft/textures";
 
@@ -100,42 +80,24 @@ async function generatePack() {
 
     let _description = (packDescription.value.length != 0) ? 
         packDescription.value : 
-        "custom-emoji-generator [by roo]";
-
-    let _toAdd = [ ];
-
+        "custom emoji generator [by roo]";
+    
+    // create our zip file
     let _zip = new JSZip();
 
-    // let _zipFile = new ZipJS.BlobWriter("application/zip");
-    // let _zipWriter = new ZipJS.ZipWriter(_zipFile, { extendedTimestamp: false, compressionMethod: 8 });
-
-    // _zipWriter.add("assets/");
-    // _zipWriter.add("assets/minecraft/");
-    // _zipWriter.add("assets/minecraft/font/");
-
+    // process images
     for(let i = 0; i < images.length; i++) {
-        // let _img = await new ZipJS.Data64URIReader(images[i][1]);
         _msg += writeBitmap((unicodeStart + i).toString(16).toUpperCase(), images[i][0], 16, 16, _name);
-
-        _toAdd[_toAdd.length] = [ `${imagePath}/${_name}/${images[i][0]}.png`, images[i][1] ];
+        _zip.file(`${imagePath}/${_name}/${images[i][0]}.png`, images[i][1], { base64: true });
     }
 
+    // remove trailing json data
     _msg = _msg.substring(0, _msg.length - 2) + "]}";
+
     _zip.file(`${fontPath}/default.json`, _msg);
-    // await _zipWriter.add(`${fontPath}/default.json`, new ZipJS.TextReader(_msg));
+    _zip.file("pack.mcmeta", `{"pack": { "pack_format": ${packFormat}, "description": "${_description}" } }`);
 
-    // _zipWriter.add("assets/minecraft/textures/");
-    // _zipWriter.add("assets/minecraft/textures/pack/");
-    
-    _toAdd.forEach(async function (_img) {
-        _zip.file(_img[0], _img[1], { base64: true });
-        // await _zipWriter.add(_img[0], _img[1]);
-    });
-    
-    _zip.file("pack.mcmeta", `{"pack": { "pack_format": 46, "description": "${_description}" } }`);
-    // await _zipWriter.add("pack.mcmeta", new ZipJS.TextReader(`{"pack": { "pack_format": 46, "description": "${_description}" } }`));
-    // await _zipWriter.close();
-
+    // generate blob and download file
     _zip.generateAsync({ type:"blob" }).then((_blob) => {
         let _url = window.URL.createObjectURL(_blob);
     
@@ -149,8 +111,6 @@ async function generatePack() {
         _link.click();
         window.URL.revokeObjectURL(_url);
     });
-
-    // let _blob = await _zipFile.getData();
 }
 
 // create the glyph entry
