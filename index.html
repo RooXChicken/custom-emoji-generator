@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Winky+Sans" />
+        <link rel="stylesheet" href="style.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- fix scaling on mobile :D -->
+        <title>Custom Emoji Pack Generator</title>
+        
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    </head>
+
+    <body onload="onLoad()">
+        <div id="packDetails" class="content">
+            <medium>Resourcepack Name</medium>
+            <input id="resourcePackName" type="text">
+
+            <medium>Resourcepack Description</medium>
+            <input id="resourcePackDescription" type="text">
+        </div>
+
+        <div class="content">
+            <medium>Clip to copy unicode!</medium>
+        </div>
+
+        <div id="imageDetails" class="content" style="margin-top: 4px">
+            <!-- filled out by images -->
+            <div id="imagePreview"></div>
+
+            <input id="imageUploader" accept="image/png" type="file" multiple onchange="loadImages()">
+            <button id="generatePack" onclick="generatePack()">Generate Resourcepack</button>
+        </div>
+    </body>
+
+    <!-- add script at the bottom to ensure all elements have been created -->
+    <script src="modules/jszip.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+</html>

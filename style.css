@@ -1,0 +1,82 @@
+body {
+    background-color: rgb(61, 0, 56);
+    color: rgb(255, 255, 255);
+
+    font-family: 'Winky Sans';
+    font-weight: 700;
+
+    max-height: fit-content;
+    --icon-color: rgb(255, 255, 255);
+    --text-color: rgb(0, 0, 0);
+}
+
+.content {
+    display: flex;
+    
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    
+    background-color: rgba(0,0,0, 0.35);
+    border-radius: 24px 24px 24px 24px;
+    padding: 10px;
+    width: fit-content;
+    
+    margin: auto;
+    margin-top: 24px;
+}
+
+#packDetails {
+    margin-top: 96px;
+}
+
+#imagePreview {
+    display: flex;
+
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 960px;
+}
+
+.icon {
+    width: 64px;
+    padding: 8px;
+    border-radius: 12px 12px 12px 12px;
+    
+    transform: scale(1);
+    transition: transform 0.04s ease-in-out;
+    
+    filter: drop-shadow(0px 0px 0.35rem rgba(0, 0, 0, 0.8));
+    image-rendering: crisp-edges;
+}
+
+.icon:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+.iconLabel {
+    background-color: rgba(0, 0, 0, 0.80);
+    display: none;
+    position: absolute;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 4px;
+    border-radius: 12px 12px 12px 12px;
+
+    transform: translateY(-88px);
+    z-index: 1;
+}
+
+.iconContainer {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+}
+
+button, input {
+    font-family: 'Winky Sans';
+}
