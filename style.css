@@ -161,6 +161,15 @@ a {
     border-radius: 12px 12px 12px 12px;
 }
 
+.label:disabled {
+    cursor: not-allowed;
+}
+
+#copyUnicodeLabel {
+    cursor: pointer;
+    margin: auto;
+}
+
 #imageSettings {
     display: flex;
     flex-direction: column;

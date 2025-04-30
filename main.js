@@ -11,6 +11,7 @@ const packDescription = document.getElementById("resourcePackDescription");
 const packPNG = document.getElementById("packPNG");
 
 const startingUnicode = document.getElementById("startingUnicode");
+const copyUnicodeLabel = document.getElementById("copyUnicodeLabel");
 var unicodeStart = 0xE000;
 
 const imagePreview = document.getElementById("imagePreview");
@@ -27,6 +28,7 @@ function onLoad() {
     packName.value = "pack";
     packDescription.value = "";
 
+    copyUnicodeLabel.style.cursor = "not-allowed";
     startingUnicode.value = "\\uE000";
     startingUnicode.onkeyup = () => {
         if(!ensureValidUnicode()) {
@@ -156,6 +158,7 @@ function createIcon(_src, _index) {
         // remove old icon
         selectedIcon = null;
         selectedIconIndex = -1;
+        copyUnicodeLabel.style.cursor = "not-allowed";
         setImageSettings("", "", true);
 
         // only set new icon if it wasn't the old one
@@ -163,6 +166,7 @@ function createIcon(_src, _index) {
             selectedIcon = _image;
             selectedIconIndex = _index;
             
+            copyUnicodeLabel.style.cursor = "pointer";
             selectedIcon.style.transform = "scale(1.3)";
             setImageSettings(images[_index][2][0], images[_index][2][1], false);
         }
