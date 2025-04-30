@@ -1,3 +1,6 @@
+const errorColor = "rgb(255, 32, 32)";
+const borderColor = "rgb(255, 117, 209)";
+
 const packFormat = 46;
 const fontPath = "assets/minecraft/font";
 const imagePath = "assets/minecraft/textures";
@@ -32,10 +35,10 @@ function onLoad() {
     startingUnicode.value = "\\uE000";
     startingUnicode.onkeyup = () => {
         if(!ensureValidUnicode()) {
-            startingUnicode.style.borderColor = "rgb(255, 32, 32)";
+            startingUnicode.style.borderColor = errorColor
         }
         else {
-            startingUnicode.style.borderColor = "rgb(255, 117, 209)";
+            startingUnicode.style.borderColor = borderColor;
         }
     };
 
@@ -73,11 +76,11 @@ function handleImageSetting(_input, _index) {
 
     // finds any non number characters
     if(_input.value.match("[^0-9]") != null) {
-        _input.style.borderColor = "rgb(255, 32, 32)";
+        _input.style.borderColor = errorColor;
         return;
     }
     else {
-        _input.style.borderColor = "rgb(255, 117, 209)";
+        _input.style.borderColor = borderColor;
     }
 
     images[selectedIconIndex][2][_index] = 
@@ -139,6 +142,7 @@ function createIcon(_src, _index) {
     let _image = document.createElement("img");
     _image.classList.add("icon");
     _image.src = _src;
+    _image.alt = "Icon " + images[_index][0];
 
     _image.onmouseenter = (_event) => {
         _label.style.display = "block";
@@ -213,12 +217,12 @@ function setImageSettings(_height, _scale, _disabled) {
     scaleInput.disabled = _disabled;
 
     if(_disabled) {
-        heightInput.style.borderColor = "rgb(255, 32, 32)";
-        scaleInput.style.borderColor = "rgb(255, 32, 32)";
+        heightInput.style.borderColor = errorColor;
+        scaleInput.style.borderColor = errorColor;
     }
     else {
-        heightInput.style.borderColor = "rgb(255, 117, 209)";
-        scaleInput.style.borderColor = "rgb(255, 117, 209)";
+        heightInput.style.borderColor = borderColor;
+        scaleInput.style.borderColor = borderColor;
     }
 }
 
