@@ -149,8 +149,13 @@ button:disabled, input:disabled {
 }
 
 a {
+    display: block;
     color: inherit;
     max-width: fit-content;
+}
+
+.footer {
+    margin: auto;
 }
 
 .label {
